@@ -1,0 +1,184 @@
+<div class="app-container">
+	<div class="euiPage euiPage--widthIsNotRestricted">
+	<div class="euiPageBody euiPage--widthIsNotRestricted"> 
+
+	<div id="header1" style="font-size: 14px;">Elasticsearch Tasks</div> 
+	<br>
+
+	<div id="refresh1">
+	<input type=submit class='button' value='refresh' onclick='getTasks()'></input>
+	<input type=submit class='button' value='cancel all' onclick='stopAllTasks()'></input>	
+	</div>	
+	<div id="statusmessage"></div>
+	<br>
+	<br>
+	<div id="drawingarea1" style="height:1024px; width:800px; background:#FFFFFF"></div>
+	<br>
+	
+	
+
+	
+	<style>
+	
+		table, td {
+		  border: 1px solid black;
+		}
+		
+		th {
+		  border: 1px solid black;
+		  background-color: #005AF0;
+		  color: white;
+		}		
+	
+		.button {
+		  background-color: #4CAF50;
+		  border: none;
+		  color: white;
+		  padding: 5px 10px;
+		  text-align: center;
+		  text-decoration: none;
+		  display: inline-block;
+		  font-size: 14px;
+		  width: 130px;
+		  cursor: pointer;
+		  border-radius: 10px;
+		  margin: auto;
+		}	
+		
+		.button:hover {background-color: #3e8e41}
+		
+	</style>
+
+	<script>
+	
+	function setMessage(strMessage)
+	{
+		var d1 = document.getElementById("statusmessage");	
+		d1.innerText = strMessage;
+	}
+
+	function stopAllTasks()
+	{
+		
+		try
+		{
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() 
+			{
+				if (this.readyState == 4 && this.status == 200) 
+				{
+					getTasks();
+				}
+			};
+
+			var strHost = document.location.host;
+
+			if(strHost == null || strHost.length < 1) strHost = "localhost";
+
+			xhttp.open("GET", "http://" + strHost + "/api/yellowpanel/stopalltasks", true);
+			xhttp.send();
+		}
+		catch(err)
+		{
+			setMessage(err.message);
+		}
+	}
+	
+	function stopTask(strTaskID)
+	{
+		try
+		{
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() 
+			{
+				if (this.readyState == 4 && this.status == 200) 
+				{
+					getTasks();
+				}
+			};
+
+			var strHost = document.location.host;
+
+			if(strHost == null || strHost.length < 1) strHost = "localhost";
+
+			xhttp.open("POST", "http://" + strHost + "/api/yellowpanel/stoptask/" +strTaskID, true);
+			xhttp.send();
+		
+		}
+		catch(err)
+		{
+			setMessage(err.message);
+		}		
+	}
+
+	function getTasks()
+	{
+		try
+		{
+			var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() 
+			{
+			if (this.readyState == 4 && this.status == 200) 
+			{
+				fillNodeList(this.response);
+			}
+			};
+
+			var strHost = document.location.host;
+
+			if(strHost == null || strHost.length < 1) strHost = "localhost";
+
+			xhttp.open("GET", "http://" + strHost + "/api/yellowpanel/gettasks", true);
+			xhttp.send();		
+		}
+		catch(err)
+		{
+			setMessage(err.message);
+		}		
+	}
+
+
+	function fillNodeList(strNodes)
+	{
+		var d1 = document.getElementById("drawingarea1");	
+		
+		var strHtml = "<table  bgcolor='#FFFFFF' width='100%'><tr><th><b>node</b></th><th><b>id</b></th><th><b>action</b></th><th><b>cancellable</b></th><th>running</th><th><b>command</b></th></tr>\r\n";
+		var xNodesNodes = JSON.parse(strNodes);
+		var xNodes = xNodesNodes.nodes;
+		
+		for(var x in xNodes)
+		{
+			for(var task in xNodes[x].tasks)
+			{
+				var strNode = xNodes[x].tasks[task].node;
+				var strID = xNodes[x].tasks[task].id;
+				var strAction = xNodes[x].tasks[task].action;
+				var strCancellable = xNodes[x].tasks[task].cancellable;
+				var secondsRunning = xNodes[x].tasks[task].running_time_in_nanos / 1000000;
+				
+				strHtml += "<tr><td>" + strNode + "</td><td>" + strID + "</td><td>" + strAction + "</td><td>" + 
+				strCancellable + "</td><td>" + secondsRunning + "</td><td>"
+				
+				if(xNodes[x].tasks[task].cancellable) 
+				{ 
+					strHtml += "<input type=submit class='button' value='cancel' onclick='stopTask('" + strID + ":" + strID + "'></input>";
+				}
+				else {strHtml +=".";}
+				
+				
+				"</td></tr>";
+			}
+		}
+		
+		strHtml += "</table>"
+		
+		d1.innerHTML = strHtml;
+	}
+
+	getTasks();
+	
+	</script>
+	
+  </div>
+  </div>
+</div>

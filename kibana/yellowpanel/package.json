@@ -1,0 +1,15 @@
+{
+  "name": "yellowpanel",
+  "version": "6.6.0",
+  "description": "yellowpanel",
+  "main": "index.js",
+  "kibana": {
+    "version": "6.6.0",
+    "templateVersion": "7.2.0"
+  },
+  "dependencies": {
+    "boom": "2.8.0",
+    "joi": "6.10.1",
+    "lodash": "4.17.5"
+  }
+}
