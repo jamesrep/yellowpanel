@@ -5,5 +5,6 @@ Kibana plugin to list Elasticsearch tasks and cancel specific or all tasks at on
 
 In kibana.yml set:
 
-yellowpanel.esHost: theipofelasticsearch
-yellowpanel.esPort: theportofelasticsearch
+* yellowpanel.esHost: theipofelasticsearch
+* yellowpanel.esPort: theportofelasticsearch
+
