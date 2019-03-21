@@ -4,6 +4,7 @@
 
 	<div id="header1" style="font-size: 14px;">Elasticsearch Tasks</div> 
 	<br>
+	<br>
 
 	<div id="refresh1">
 	<input type=submit class='button' value='refresh' onclick='getTasks()'></input>
@@ -78,7 +79,7 @@
 		}
 	}
 	
-	function stopTask(strTaskID)
+	function stopTask(taskID)
 	{
 		try
 		{
@@ -87,13 +88,15 @@
 			{
 				if (this.readyState == 4 && this.status == 200) 
 				{
+					setMessage(this.response);
 					getTasks();
 				}
 			};
 
-			
+			var strNode = taskID.attributes["node"].nodeValue;
+			var strID = taskID.attributes["taskid"].nodeValue;	
 
-			xhttp.open("POST", strHostPrefix + "/api/yellowpanel/stoptask/" +strTaskID, true);
+			xhttp.open("GET", strHostPrefix + "/api/yellowpanel/stoptask/" +strNode + ":" + strID, true);
 			xhttp.send();
 		
 		}
@@ -130,7 +133,7 @@
 	{
 		var d1 = document.getElementById("drawingarea1");	
 		
-		var strHtml = "<table  bgcolor='#FFFFFF' width='100%'><tr><th><b>node</b></th><th><b>id</b></th><th><b>action</b></th><th><b>cancellable</b></th><th>running</th></tr>\r\n";
+		var strHtml = "<table  bgcolor='#FFFFFF' width='100%'><tr><th><b>node</b></th><th><b>id</b></th><th><b>action</b></th><th><b>cancellable</b></th><th>running</th><th>Action</th></tr>\r\n";
 		var xNodesNodes = JSON.parse(strNodes);
 		var xNodes = xNodesNodes.nodes;
 		
@@ -143,12 +146,11 @@
 				var strAction = xNodes[x].tasks[task].action;
 				var strCancellable = xNodes[x].tasks[task].cancellable;
 				var secondsRunning = xNodes[x].tasks[task].running_time_in_nanos / 1000000;
+				//var objTask = strNode":"strID ;
 				
 				strHtml += "<tr><td>" + strNode + "</td><td>" + strID + "</td><td>" + strAction + "</td><td>" + 
-				strCancellable + "</td><td>" + secondsRunning + "</td>"
-				
-
-				
+				strCancellable + "</td><td>" + secondsRunning + 
+					"</td><td><input type=submit node='" + strNode + "' taskid='" + strID + "' class='button' value='cancel' onclick='stopTask(this)'>" + "</input>" +							
 				"</tr>";
 			}
 		}

@@ -18,16 +18,15 @@ export default function (server, options)
 					  // A chunk of data is received.
 					  resp.on('data', (chunk) => 
 					  {
-						data += chunk;
+							data += chunk;
 					  });
 
 					  // The whole response is done.
 					  resp.on('end', () => 
 					  {
-						  console.log(data);
+						  //console.log(data);
 
 						  resolve( data);
-
 					  });
 
 				}).on("error", function (httperror)
@@ -51,17 +50,17 @@ export default function (server, options)
     method: 'GET',
     async handler(req, reply) 
     {
-		try
-		{
-			var strData = await getURL(strESHost, '_tasks', esPort, 'GET');
-			
-			return strData;
-		}
-		catch(err)
-		{
-			console.log(err.message);
-			return err.message;
-		}
+			try
+			{
+				var strData = await getURL(strESHost, '_tasks', esPort, 'GET');
+				
+				return strData;
+			}
+			catch(err)
+			{
+				console.log(err.message);
+				return err.message;
+			}
     }
   }
   
@@ -74,20 +73,20 @@ export default function (server, options)
     method: 'GET',
     async handler(req, reply) 
     {
-		try
-		{		
-			console.log(req.params.name);
+			try
+			{		
+				console.log(req.params.name);
+				
+				var strData = await getURL(strESHost, '_tasks/' + req.params.name + '/_cancel', esPort, 'POST');
+				
+				return strData;
 			
-			var strData = await getURL(strESHost, '_tasks/' + req.params.name + '/_cancel', esPort, 'POST');
-			
-			return strData;
-		
-		}
-		catch(err)
-		{
-			console.log(err.message);
-			return err.message;
-		}	
+			}
+			catch(err)
+			{
+				console.log(err.message);
+				return err.message;
+			}	
     }
   }
   
@@ -99,22 +98,19 @@ export default function (server, options)
     method: 'GET',
     async handler(req, reply) 
     {
-		try
-		{
-			var strData = await getURL(strESHost, '_tasks/_cancel', esPort, 'POST');
-			
-			return strData;
-		}
-		catch(err)
-		{
-			console.log(err.message);
-			return err.message;
-		}	
+			try
+			{
+				var strData = await getURL(strESHost, '_tasks/_cancel', esPort, 'POST');
+				
+				return strData;
+			}
+			catch(err)
+			{
+				console.log(err.message);
+				return err.message;
+			}	
     }
   }
   
   );   
-  
-
-
 }
