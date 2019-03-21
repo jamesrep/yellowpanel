@@ -77,7 +77,7 @@ export default function (server, options)
 			{		
 				console.log(req.params.name);
 				
-				var strData = await getURL(strESHost, '_tasks/' + req.params.name + '/_cancel', esPort, 'POST');
+				var strData = await getURL(strESHost, '_tasks/' + escape(req.params.name) + '/_cancel', esPort, 'POST');
 				
 				return strData;
 			
