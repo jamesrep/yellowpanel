@@ -16,7 +16,8 @@ export default function (kibana)
       }
     },
 
-	config(Joi) {
+  config(Joi) 
+  {
       return Joi.object({
         enabled: Joi.boolean().default(true),
         esHost: Joi.string()
@@ -29,7 +30,7 @@ export default function (kibana)
     },
     
     init(server, options) 
-	{
+	  {
       yellowpanelroutes(server, options);
     }
 
